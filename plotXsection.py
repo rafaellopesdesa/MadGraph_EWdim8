@@ -69,19 +69,22 @@ def getEvents(LHEFile, numberOfRuns):
             renormalizationUp = recalculateRenormalization(alphaSOrder, renormalizationScale, 2.)
             renormalizationDown = recalculateRenormalization(alphaSOrder, renormalizationScale, 0.5)
 
+            factorizationInfo = child[0][2].text.split()
+            id1 = int(factorizationInfo[1])
+            x1 = float(factorizationInfo[2])
+            factorizationScale1 = float(factorizationInfo[3])
+
+            factorizationInfo = child[0][3].text.split()
+            id2 = int(factorizationInfo[1])
+            x2 = float(factorizationInfo[2])
+            factorizationScale2 = float(factorizationInfo[3])
+
+            factorizationUp = recalculateFactorization(x1, id1, factorizationScale1, x2, id2, factorizationScale2, 2.)
+            factorizationDown = recalculateFactorization(x1, id1, factorizationScale1, x2, id2, factorizationScale2, 0.5)
+
             eventInfo = child.text.splitlines()
-
-            factorizationInfo = eventInfo[1].split()
             eventWeight = float(factorizationInfo[2])
-            factorizationScale = float(factorizationInfo[3])
-            x1 = float(factorizationInfo[4])
-            x2 = float(factorizationInfo[5])
-            id1 = int(eventInfo[2].split()[0])
-            id2 = int(eventInfo[3].split()[0])
 
-            factorizationUp = recalculateFactorization(x1, id1, x2, id2, factorizationScale, 2.)
-            factorizationDown = recalculateFactorization(x1, id1, x2, id2, factorizationScale, 0.5)
-            
             for line in eventInfo[4:]:
                 particleInfo = line.split()
                 pdgID = int(particleInfo[0])
@@ -127,9 +130,11 @@ def recalculateRenormalization(alphaSOrder, renormalizationScale, multiplier):
     retval = ROOT.TMath.Power(lhapdf.alphasPDF(renormalizationScale*multiplier)/lhapdf.alphasPDF(renormalizationScale), alphaSOrder)
     return retval
 
-def recalculateFactorization(x1, id1, x2, id2, factorizationScale, multiplier):
+def recalculateFactorization(x1, id1, factorizationScale1, x2, id2, factorizationScale2, multiplier):
 
     ''' Recalculate the PDF using the new factorization scale '''
+
+    print x1, id1, factorizationScale1, x2, id2, factorizationScale2
 
     lhapdfID1 = id1
     if lhapdfID1 == 21:
@@ -142,11 +147,11 @@ def recalculateFactorization(x1, id1, x2, id2, factorizationScale, multiplier):
     # LHAPDF only returns x * f(x, Q) ... that's why I divide by x.
     # Not strictly necessary, since we are interest in ratios, but anyway...
 
-    oldWeight1 = lhapdf.xfx(x1, factorizationScale, lhapdfID1)/x1
-    newWeight1 = lhapdf.xfx(x1, factorizationScale*multiplier, lhapdfID1)/x1
+    oldWeight1 = lhapdf.xfx(x1, factorizationScale1, lhapdfID1)/x1
+    newWeight1 = lhapdf.xfx(x1, factorizationScale1*multiplier, lhapdfID1)/x1
 
-    oldWeight2 = lhapdf.xfx(x2, factorizationScale, lhapdfID2)/x2
-    newWeight2 = lhapdf.xfx(x2, factorizationScale*multiplier, lhapdfID2)/x2
+    oldWeight2 = lhapdf.xfx(x2, factorizationScale2, lhapdfID2)/x2
+    newWeight2 = lhapdf.xfx(x2, factorizationScale2*multiplier, lhapdfID2)/x2
 
     return (newWeight1*newWeight2)/(oldWeight1*oldWeight2)
 
@@ -180,24 +185,64 @@ if __name__ == "__main__":
     
     lhapdf.initPDFSetByName("cteq6ll.LHpdf")
     lhapdf.initPDF(0)
-    mjj_min = 100.
-    detajj_min = 1.0
+    mjj_min = 150.
+    detajj_min = 1.5
 
     # Be careful, this thing will stash all the weights in memory.
     # It shouldn't be much, but don't go crazy with extremely large LHE files
-    
+
+    print 'Reading WmWm EWK + QCD'
     WmWmEWKQCD = readFiles(['../WmWm_VBS_QED4_QCD99_SM/Events/run_01/unweighted_events.lhe',
                             '../WmWm_VBS_QED4_QCD99_SM/Events/run_02/unweighted_events.lhe'])
+    print 'Reading WmWm EWK'
     WmWmEWK = readFiles(['../WmWm_VBS_QED4_QCD0_SM/Events/run_01/unweighted_events.lhe',
                          '../WmWm_VBS_QED4_QCD0_SM/Events/run_02/unweighted_events.lhe'])
+    print 'Reading WmWm QCD'
     WmWmQCD = readFiles(['../WmWm_VBS_QED2_QCD99_SM/Events/run_01/unweighted_events.lhe',
                          '../WmWm_VBS_QED2_QCD99_SM/Events/run_02/unweighted_events.lhe'])
 
+    print 'Reading WpWp EWK + QCD'
     WpWpEWKQCD = readFiles(['../WpWp_VBS_QED4_QCD99_SM/Events/run_01/unweighted_events.lhe',
                             '../WpWp_VBS_QED4_QCD99_SM/Events/run_02/unweighted_events.lhe'])
+    print 'Reading WpWp EWK'
     WpWpEWK = readFiles(['../WpWp_VBS_QED4_QCD0_SM/Events/run_01/unweighted_events.lhe',
                          '../WpWp_VBS_QED4_QCD0_SM/Events/run_02/unweighted_events.lhe'])
+    print 'Reading WpWp QCD'
     WpWpQCD = readFiles(['../WpWp_VBS_QED2_QCD99_SM/Events/run_01/unweighted_events.lhe',
                          '../WpWp_VBS_QED2_QCD99_SM/Events/run_02/unweighted_events.lhe'])
 
+    # Now let's fill histograms
+    # I don't know if this is the best way to save the data, but there are
+    # two uncertainties: the statistical, from MC integration, and the scale variation, from factorization and renormalization.
+    # So I will put in diferent profiles.
+
+    print 'Doing analysis'
+    WmWmEWKQCD_mjj = [ROOT.TProfile('WmWmEWKQCD_mjj', '', 10, mjj_min, 550., 'g'),
+                      ROOT.TProfile('WmWmEWKQCD_mjj_down', '', 10, mjj_min, 550., 'g'),
+                      ROOT.TProfile('WmWmEWKQCD_mjj_up', '', 10, mjj_min, 550., 'g')]
+    WmWmEWKQCD_detajj = [ROOT.TProfile('WmWmEWKQCD_detajj', '', 10, detajj_min, 3.5, 'g'),
+                         ROOT.TProfile('WmWmEWKQCD_detajj_down', '', 10, detajj_min, 3.5, 'g'),
+                         ROOT.TProfile('WmWmEWKQCD_detajj_up', '', 10, detajj_min, 3.5, 'g')]
+
+    for event in WmWmEWKQCD:
+        for ibin in xrange(1,WmWmEWKQCD_mjj[0].GetNbinsX()+1):
+            if event[3] > WmWmEWKQCD_mjj[0].GetXaxis().GetBinLowEdge(ibin):
+                WmWmEWKQCD_mjj[0].Fill(WmWmEWKQCD_mjj[0].GetXaxis().GetBinCenter(ibin), event[0])
+                WmWmEWKQCD_mjj[1].Fill(WmWmEWKQCD_mjj[0].GetXaxis().GetBinCenter(ibin), event[1])
+                WmWmEWKQCD_mjj[2].Fill(WmWmEWKQCD_mjj[0].GetXaxis().GetBinCenter(ibin), event[2])
+            if event[4] > WmWmEWKQCD_detajj[0].GetXaxis().GetBinLowEdge(ibin):
+                WmWmEWKQCD_detajj[0].Fill(WmWmEWKQCD_detajj[0].GetXaxis().GetBinCenter(ibin), event[0])
+                WmWmEWKQCD_detajj[1].Fill(WmWmEWKQCD_detajj[0].GetXaxis().GetBinCenter(ibin), event[1])
+                WmWmEWKQCD_detajj[2].Fill(WmWmEWKQCD_detajj[0].GetXaxis().GetBinCenter(ibin), event[2])
+        
+        
+    # Now saves this bunch of stuff
+    outputFile = ROOT.TFile.Open('output.root', 'recreate')
+    WmWmEWKQCD_mjj[0].Write()
+    WmWmEWKQCD_mjj[1].Write()
+    WmWmEWKQCD_mjj[2].Write()
+    WmWmEWKQCD_detajj[0].Write()
+    WmWmEWKQCD_detajj[1].Write()
+    WmWmEWKQCD_detajj[2].Write()
+    outputFile.Close()
     
