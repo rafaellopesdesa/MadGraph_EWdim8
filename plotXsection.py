@@ -191,23 +191,51 @@ if __name__ == "__main__":
 
     print 'Reading WmWm EWK + QCD'
     WmWmEWKQCD = readFiles(['../WmWm_VBS_QED4_QCD99_SM/Events/run_01/unweighted_events.lhe',
-                            '../WmWm_VBS_QED4_QCD99_SM/Events/run_02/unweighted_events.lhe'])
+                            '../WmWm_VBS_QED4_QCD99_SM/Events/run_02/unweighted_events.lhe',
+                            '../WmWm_VBS_QED4_QCD99_SM/Events/run_03/unweighted_events.lhe',
+                            '../WmWm_VBS_QED4_QCD99_SM/Events/run_04/unweighted_events.lhe',
+                            '../WmWm_VBS_QED4_QCD99_SM/Events/run_05/unweighted_events.lhe',
+                            '../WmWm_VBS_QED4_QCD99_SM/Events/run_06/unweighted_events.lhe'])
     print 'Reading WmWm EWK'
     WmWmEWK = readFiles(['../WmWm_VBS_QED4_QCD0_SM/Events/run_01/unweighted_events.lhe',
-                         '../WmWm_VBS_QED4_QCD0_SM/Events/run_02/unweighted_events.lhe'])
+                         '../WmWm_VBS_QED4_QCD0_SM/Events/run_02/unweighted_events.lhe',
+                         '../WmWm_VBS_QED4_QCD0_SM/Events/run_03/unweighted_events.lhe',
+                         '../WmWm_VBS_QED4_QCD0_SM/Events/run_04/unweighted_events.lhe',
+                         '../WmWm_VBS_QED4_QCD0_SM/Events/run_05/unweighted_events.lhe',
+                         '../WmWm_VBS_QED4_QCD0_SM/Events/run_06/unweighted_events.lhe'])
     print 'Reading WmWm QCD'
     WmWmQCD = readFiles(['../WmWm_VBS_QED2_QCD99_SM/Events/run_01/unweighted_events.lhe',
-                         '../WmWm_VBS_QED2_QCD99_SM/Events/run_02/unweighted_events.lhe'])
+                         '../WmWm_VBS_QED2_QCD99_SM/Events/run_02/unweighted_events.lhe',
+                         '../WmWm_VBS_QED2_QCD99_SM/Events/run_03/unweighted_events.lhe',
+                         '../WmWm_VBS_QED2_QCD99_SM/Events/run_04/unweighted_events.lhe',
+                         '../WmWm_VBS_QED2_QCD99_SM/Events/run_05/unweighted_events.lhe',
+                         '../WmWm_VBS_QED2_QCD99_SM/Events/run_06/unweighted_events.lhe',
+                         '../WmWm_VBS_QED2_QCD99_SM/Events/run_07/unweighted_events.lhe',
+                         '../WmWm_VBS_QED2_QCD99_SM/Events/run_08/unweighted_events.lhe'])
 
     print 'Reading WpWp EWK + QCD'
     WpWpEWKQCD = readFiles(['../WpWp_VBS_QED4_QCD99_SM/Events/run_01/unweighted_events.lhe',
-                            '../WpWp_VBS_QED4_QCD99_SM/Events/run_02/unweighted_events.lhe'])
+                            '../WpWp_VBS_QED4_QCD99_SM/Events/run_02/unweighted_events.lhe',
+                            '../WpWp_VBS_QED4_QCD99_SM/Events/run_03/unweighted_events.lhe',
+                            '../WpWp_VBS_QED4_QCD99_SM/Events/run_04/unweighted_events.lhe',
+                            '../WpWp_VBS_QED4_QCD99_SM/Events/run_05/unweighted_events.lhe',
+                            '../WpWp_VBS_QED4_QCD99_SM/Events/run_06/unweighted_events.lhe'])
     print 'Reading WpWp EWK'
     WpWpEWK = readFiles(['../WpWp_VBS_QED4_QCD0_SM/Events/run_01/unweighted_events.lhe',
-                         '../WpWp_VBS_QED4_QCD0_SM/Events/run_02/unweighted_events.lhe'])
+                         '../WpWp_VBS_QED4_QCD0_SM/Events/run_02/unweighted_events.lhe',
+                         '../WpWp_VBS_QED4_QCD0_SM/Events/run_03/unweighted_events.lhe',
+                         '../WpWp_VBS_QED4_QCD0_SM/Events/run_04/unweighted_events.lhe',
+                         '../WpWp_VBS_QED4_QCD0_SM/Events/run_05/unweighted_events.lhe',
+                         '../WpWp_VBS_QED4_QCD0_SM/Events/run_06/unweighted_events.lhe'])
     print 'Reading WpWp QCD'
     WpWpQCD = readFiles(['../WpWp_VBS_QED2_QCD99_SM/Events/run_01/unweighted_events.lhe',
-                         '../WpWp_VBS_QED2_QCD99_SM/Events/run_02/unweighted_events.lhe'])
+                         '../WpWp_VBS_QED2_QCD99_SM/Events/run_02/unweighted_events.lhe',
+                         '../WpWp_VBS_QED2_QCD99_SM/Events/run_03/unweighted_events.lhe',
+                         '../WpWp_VBS_QED2_QCD99_SM/Events/run_04/unweighted_events.lhe',
+                         '../WpWp_VBS_QED2_QCD99_SM/Events/run_05/unweighted_events.lhe',
+                         '../WpWp_VBS_QED2_QCD99_SM/Events/run_06/unweighted_events.lhe',
+                         '../WpWp_VBS_QED2_QCD99_SM/Events/run_07/unweighted_events.lhe',
+                         '../WpWp_VBS_QED2_QCD99_SM/Events/run_08/unweighted_events.lhe'])
 
     # Now let's fill histograms
     # I don't know if this is the best way to save the data, but there are
