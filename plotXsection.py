@@ -83,7 +83,7 @@ def getEvents(LHEFile, numberOfRuns):
             factorizationDown = recalculateFactorization(x1, id1, factorizationScale1, x2, id2, factorizationScale2, 0.5)
 
             eventInfo = child.text.splitlines()
-            eventWeight = float(factorizationInfo[2])
+            eventWeight = float(eventInfo[1].split()[2])
 
             for line in eventInfo[4:]:
                 particleInfo = line.split()
@@ -133,8 +133,6 @@ def recalculateRenormalization(alphaSOrder, renormalizationScale, multiplier):
 def recalculateFactorization(x1, id1, factorizationScale1, x2, id2, factorizationScale2, multiplier):
 
     ''' Recalculate the PDF using the new factorization scale '''
-
-    print x1, id1, factorizationScale1, x2, id2, factorizationScale2
 
     lhapdfID1 = id1
     if lhapdfID1 == 21:
@@ -217,32 +215,229 @@ if __name__ == "__main__":
     # So I will put in diferent profiles.
 
     print 'Doing analysis'
-    WmWmEWKQCD_mjj = [ROOT.TProfile('WmWmEWKQCD_mjj', '', 10, mjj_min, 550., 'g'),
-                      ROOT.TProfile('WmWmEWKQCD_mjj_down', '', 10, mjj_min, 550., 'g'),
-                      ROOT.TProfile('WmWmEWKQCD_mjj_up', '', 10, mjj_min, 550., 'g')]
-    WmWmEWKQCD_detajj = [ROOT.TProfile('WmWmEWKQCD_detajj', '', 10, detajj_min, 3.5, 'g'),
-                         ROOT.TProfile('WmWmEWKQCD_detajj_down', '', 10, detajj_min, 3.5, 'g'),
-                         ROOT.TProfile('WmWmEWKQCD_detajj_up', '', 10, detajj_min, 3.5, 'g')]
+    ROOT.TH1.SetDefaultSumw2()
+    
+    WmWmEWKQCD_mjj = [ROOT.TH1D('WmWmEWKQCD_mjj', '', 100, mjj_min, 550.),
+                      ROOT.TH1D('WmWmEWKQCD_mjj_down', '', 100, mjj_min, 550.),
+                      ROOT.TH1D('WmWmEWKQCD_mjj_up', '', 100, mjj_min, 550.)]
+    WmWmEWKQCD_detajj = [ROOT.TH1D('WmWmEWKQCD_detajj', '', 100, detajj_min, 3.5),
+                         ROOT.TH1D('WmWmEWKQCD_detajj_down', '', 100, detajj_min, 3.5),
+                         ROOT.TH1D('WmWmEWKQCD_detajj_up', '', 100, detajj_min, 3.5)]
+    WmWmEWK_mjj = [ROOT.TH1D('WmWmEWK_mjj', '', 100, mjj_min, 550.),
+                      ROOT.TH1D('WmWmEWK_mjj_down', '', 100, mjj_min, 550.),
+                      ROOT.TH1D('WmWmEWK_mjj_up', '', 100, mjj_min, 550.)]
+    WmWmEWK_detajj = [ROOT.TH1D('WmWmEWK_detajj', '', 100, detajj_min, 3.5),
+                         ROOT.TH1D('WmWmEWK_detajj_down', '', 100, detajj_min, 3.5),
+                         ROOT.TH1D('WmWmEWK_detajj_up', '', 100, detajj_min, 3.5)]
+    WmWmQCD_mjj = [ROOT.TH1D('WmWmQCD_mjj', '', 100, mjj_min, 550.),
+                      ROOT.TH1D('WmWmQCD_mjj_down', '', 100, mjj_min, 550.),
+                      ROOT.TH1D('WmWmQCD_mjj_up', '', 100, mjj_min, 550.)]
+    WmWmQCD_detajj = [ROOT.TH1D('WmWmQCD_detajj', '', 100, detajj_min, 3.5),
+                         ROOT.TH1D('WmWmQCD_detajj_down', '', 100, detajj_min, 3.5),
+                         ROOT.TH1D('WmWmQCD_detajj_up', '', 100, detajj_min, 3.5)]
+
+    WpWpEWKQCD_mjj = [ROOT.TH1D('WpWpEWKQCD_mjj', '', 100, mjj_min, 550.),
+                      ROOT.TH1D('WpWpEWKQCD_mjj_down', '', 100, mjj_min, 550.),
+                      ROOT.TH1D('WpWpEWKQCD_mjj_up', '', 100, mjj_min, 550.)]
+    WpWpEWKQCD_detajj = [ROOT.TH1D('WpWpEWKQCD_detajj', '', 100, detajj_min, 3.5),
+                         ROOT.TH1D('WpWpEWKQCD_detajj_down', '', 100, detajj_min, 3.5),
+                         ROOT.TH1D('WpWpEWKQCD_detajj_up', '', 100, detajj_min, 3.5)]
+    WpWpEWK_mjj = [ROOT.TH1D('WpWpEWK_mjj', '', 100, mjj_min, 550.),
+                      ROOT.TH1D('WpWpEWK_mjj_down', '', 100, mjj_min, 550.),
+                      ROOT.TH1D('WpWpEWK_mjj_up', '', 100, mjj_min, 550.)]
+    WpWpEWK_detajj = [ROOT.TH1D('WpWpEWK_detajj', '', 100, detajj_min, 3.5),
+                         ROOT.TH1D('WpWpEWK_detajj_down', '', 100, detajj_min, 3.5),
+                         ROOT.TH1D('WpWpEWK_detajj_up', '', 100, detajj_min, 3.5)]
+    WpWpQCD_mjj = [ROOT.TH1D('WpWpQCD_mjj', '', 100, mjj_min, 550.),
+                      ROOT.TH1D('WpWpQCD_mjj_down', '', 100, mjj_min, 550.),
+                      ROOT.TH1D('WpWpQCD_mjj_up', '', 100, mjj_min, 550.)]
+    WpWpQCD_detajj = [ROOT.TH1D('WpWpQCD_detajj', '', 100, detajj_min, 3.5),
+                         ROOT.TH1D('WpWpQCD_detajj_down', '', 100, detajj_min, 3.5),
+                         ROOT.TH1D('WpWpQCD_detajj_up', '', 100, detajj_min, 3.5)]
 
     for event in WmWmEWKQCD:
         for ibin in xrange(1,WmWmEWKQCD_mjj[0].GetNbinsX()+1):
-            if event[3] > WmWmEWKQCD_mjj[0].GetXaxis().GetBinLowEdge(ibin):
+            if event[3] > WmWmEWKQCD_mjj[0].GetXaxis().GetBinLowEdge(ibin) and event[4] > 2.5:
                 WmWmEWKQCD_mjj[0].Fill(WmWmEWKQCD_mjj[0].GetXaxis().GetBinCenter(ibin), event[0])
-                WmWmEWKQCD_mjj[1].Fill(WmWmEWKQCD_mjj[0].GetXaxis().GetBinCenter(ibin), event[1])
-                WmWmEWKQCD_mjj[2].Fill(WmWmEWKQCD_mjj[0].GetXaxis().GetBinCenter(ibin), event[2])
-            if event[4] > WmWmEWKQCD_detajj[0].GetXaxis().GetBinLowEdge(ibin):
+                WmWmEWKQCD_mjj[1].Fill(WmWmEWKQCD_mjj[1].GetXaxis().GetBinCenter(ibin), event[1])
+                WmWmEWKQCD_mjj[2].Fill(WmWmEWKQCD_mjj[2].GetXaxis().GetBinCenter(ibin), event[2])
+            if event[4] > WmWmEWKQCD_detajj[0].GetXaxis().GetBinLowEdge(ibin) and event[3] > 500:
                 WmWmEWKQCD_detajj[0].Fill(WmWmEWKQCD_detajj[0].GetXaxis().GetBinCenter(ibin), event[0])
-                WmWmEWKQCD_detajj[1].Fill(WmWmEWKQCD_detajj[0].GetXaxis().GetBinCenter(ibin), event[1])
-                WmWmEWKQCD_detajj[2].Fill(WmWmEWKQCD_detajj[0].GetXaxis().GetBinCenter(ibin), event[2])
+                WmWmEWKQCD_detajj[1].Fill(WmWmEWKQCD_detajj[1].GetXaxis().GetBinCenter(ibin), event[1])
+                WmWmEWKQCD_detajj[2].Fill(WmWmEWKQCD_detajj[2].GetXaxis().GetBinCenter(ibin), event[2])
         
+
+    for event in WmWmEWK:
+        for ibin in xrange(1,WmWmEWK_mjj[0].GetNbinsX()+1):
+            if event[3] > WmWmEWK_mjj[0].GetXaxis().GetBinLowEdge(ibin) and event[4] > 2.5:
+                WmWmEWK_mjj[0].Fill(WmWmEWK_mjj[0].GetXaxis().GetBinCenter(ibin), event[0])
+                WmWmEWK_mjj[1].Fill(WmWmEWK_mjj[1].GetXaxis().GetBinCenter(ibin), event[1])
+                WmWmEWK_mjj[2].Fill(WmWmEWK_mjj[2].GetXaxis().GetBinCenter(ibin), event[2])
+            if event[4] > WmWmEWK_detajj[0].GetXaxis().GetBinLowEdge(ibin) and event[3] > 500:
+                WmWmEWK_detajj[0].Fill(WmWmEWK_detajj[0].GetXaxis().GetBinCenter(ibin), event[0])
+                WmWmEWK_detajj[1].Fill(WmWmEWK_detajj[1].GetXaxis().GetBinCenter(ibin), event[1])
+                WmWmEWK_detajj[2].Fill(WmWmEWK_detajj[2].GetXaxis().GetBinCenter(ibin), event[2])
         
+
+    for event in WmWmQCD:
+        for ibin in xrange(1,WmWmQCD_mjj[0].GetNbinsX()+1):
+            if event[3] > WmWmQCD_mjj[0].GetXaxis().GetBinLowEdge(ibin) and event[4] > 2.5:
+                WmWmQCD_mjj[0].Fill(WmWmQCD_mjj[0].GetXaxis().GetBinCenter(ibin), event[0])
+                WmWmQCD_mjj[1].Fill(WmWmQCD_mjj[1].GetXaxis().GetBinCenter(ibin), event[1])
+                WmWmQCD_mjj[2].Fill(WmWmQCD_mjj[2].GetXaxis().GetBinCenter(ibin), event[2])
+            if event[4] > WmWmQCD_detajj[0].GetXaxis().GetBinLowEdge(ibin) and event[3] > 500:
+                WmWmQCD_detajj[0].Fill(WmWmQCD_detajj[0].GetXaxis().GetBinCenter(ibin), event[0])
+                WmWmQCD_detajj[1].Fill(WmWmQCD_detajj[1].GetXaxis().GetBinCenter(ibin), event[1])
+                WmWmQCD_detajj[2].Fill(WmWmQCD_detajj[2].GetXaxis().GetBinCenter(ibin), event[2])
+        
+
+    for event in WpWpEWKQCD:
+        for ibin in xrange(1,WpWpEWKQCD_mjj[0].GetNbinsX()+1):
+            if event[3] > WpWpEWKQCD_mjj[0].GetXaxis().GetBinLowEdge(ibin) and event[4] > 2.5:
+                WpWpEWKQCD_mjj[0].Fill(WpWpEWKQCD_mjj[0].GetXaxis().GetBinCenter(ibin), event[0])
+                WpWpEWKQCD_mjj[1].Fill(WpWpEWKQCD_mjj[1].GetXaxis().GetBinCenter(ibin), event[1])
+                WpWpEWKQCD_mjj[2].Fill(WpWpEWKQCD_mjj[2].GetXaxis().GetBinCenter(ibin), event[2])
+            if event[4] > WpWpEWKQCD_detajj[0].GetXaxis().GetBinLowEdge(ibin) and event[3] > 500:
+                WpWpEWKQCD_detajj[0].Fill(WpWpEWKQCD_detajj[0].GetXaxis().GetBinCenter(ibin), event[0])
+                WpWpEWKQCD_detajj[1].Fill(WpWpEWKQCD_detajj[1].GetXaxis().GetBinCenter(ibin), event[1])
+                WpWpEWKQCD_detajj[2].Fill(WpWpEWKQCD_detajj[2].GetXaxis().GetBinCenter(ibin), event[2])
+        
+
+    for event in WpWpEWK:
+        for ibin in xrange(1,WpWpEWK_mjj[0].GetNbinsX()+1):
+            if event[3] > WpWpEWK_mjj[0].GetXaxis().GetBinLowEdge(ibin) and event[4] > 2.5:
+                WpWpEWK_mjj[0].Fill(WpWpEWK_mjj[0].GetXaxis().GetBinCenter(ibin), event[0])
+                WpWpEWK_mjj[1].Fill(WpWpEWK_mjj[1].GetXaxis().GetBinCenter(ibin), event[1])
+                WpWpEWK_mjj[2].Fill(WpWpEWK_mjj[2].GetXaxis().GetBinCenter(ibin), event[2])
+            if event[4] > WpWpEWK_detajj[0].GetXaxis().GetBinLowEdge(ibin) and event[3] > 500:
+                WpWpEWK_detajj[0].Fill(WpWpEWK_detajj[0].GetXaxis().GetBinCenter(ibin), event[0])
+                WpWpEWK_detajj[1].Fill(WpWpEWK_detajj[1].GetXaxis().GetBinCenter(ibin), event[1])
+                WpWpEWK_detajj[2].Fill(WpWpEWK_detajj[2].GetXaxis().GetBinCenter(ibin), event[2])
+        
+
+    for event in WpWpQCD:
+        for ibin in xrange(1,WpWpQCD_mjj[0].GetNbinsX()+1):
+            if event[3] > WpWpQCD_mjj[0].GetXaxis().GetBinLowEdge(ibin) and event[4] > 2.5:
+                WpWpQCD_mjj[0].Fill(WpWpQCD_mjj[0].GetXaxis().GetBinCenter(ibin), event[0])
+                WpWpQCD_mjj[1].Fill(WpWpQCD_mjj[1].GetXaxis().GetBinCenter(ibin), event[1])
+                WpWpQCD_mjj[2].Fill(WpWpQCD_mjj[2].GetXaxis().GetBinCenter(ibin), event[2])
+            if event[4] > WpWpQCD_detajj[0].GetXaxis().GetBinLowEdge(ibin) and event[3] > 500:
+                WpWpQCD_detajj[0].Fill(WpWpQCD_detajj[0].GetXaxis().GetBinCenter(ibin), event[0])
+                WpWpQCD_detajj[1].Fill(WpWpQCD_detajj[1].GetXaxis().GetBinCenter(ibin), event[1])
+                WpWpQCD_detajj[2].Fill(WpWpQCD_detajj[2].GetXaxis().GetBinCenter(ibin), event[2])
+        
+
+    # Finally, the interference analysis
+    print 'Doing interference calculation'
+
+    WmWmInterference_mjj = [ROOT.TH1D('WmWmInterference_mjj', '', 100, mjj_min, 550.),
+                            ROOT.TH1D('WmWmInterference_mjj_down', '', 100, mjj_min, 550.),
+                            ROOT.TH1D('WmWmInterference_mjj_up', '', 100, mjj_min, 550.)]
+    
+
+    WpWpInterference_mjj = [ROOT.TH1D('WpWpInterference_mjj', '', 100, mjj_min, 550.),
+                            ROOT.TH1D('WpWpInterference_mjj_down', '', 100, mjj_min, 550.),
+                            ROOT.TH1D('WpWpInterference_mjj_up', '', 100, mjj_min, 550.)]
+    
+
+    WmWmInterference_detajj = [ROOT.TH1D('WmWmInterference_detajj', '', 100, detajj_min, 3.5),
+                            ROOT.TH1D('WmWmInterference_detajj_down', '', 100, detajj_min, 3.5),
+                            ROOT.TH1D('WmWmInterference_detajj_up', '', 100, detajj_min, 3.5)]
+    
+
+    WpWpInterference_detajj = [ROOT.TH1D('WpWpInterference_detajj', '', 100, detajj_min, 3.5),
+                            ROOT.TH1D('WpWpInterference_detajj_down', '', 100, detajj_min, 3.5),
+                            ROOT.TH1D('WpWpInterference_detajj_up', '', 100, detajj_min, 3.5)]
+    
+
+    WmWmInterference_mjj[0].Add(WmWmEWKQCD_mjj[0], WmWmEWK_mjj[0], 1., -1.)
+    WmWmInterference_mjj[0].Add(WmWmQCD_mjj[0], -1.)
+    WmWmInterference_mjj[1].Add(WmWmEWKQCD_mjj[1], WmWmEWK_mjj[1], 1., -1.)
+    WmWmInterference_mjj[1].Add(WmWmQCD_mjj[1], -1.)
+    WmWmInterference_mjj[2].Add(WmWmEWKQCD_mjj[2], WmWmEWK_mjj[2], 1., -1.)
+    WmWmInterference_mjj[2].Add(WmWmQCD_mjj[2], -1.)
+
+    WpWpInterference_mjj[0].Add(WpWpEWKQCD_mjj[0], WpWpEWK_mjj[0], 1., -1.)
+    WpWpInterference_mjj[0].Add(WpWpQCD_mjj[0], -1.)
+    WpWpInterference_mjj[1].Add(WpWpEWKQCD_mjj[1], WpWpEWK_mjj[1], 1., -1.)
+    WpWpInterference_mjj[1].Add(WpWpQCD_mjj[1], -1.)
+    WpWpInterference_mjj[2].Add(WpWpEWKQCD_mjj[2], WpWpEWK_mjj[2], 1., -1.)
+    WpWpInterference_mjj[2].Add(WpWpQCD_mjj[2], -1.)
+
+    WmWmInterference_detajj[0].Add(WmWmEWKQCD_detajj[0], WmWmEWK_detajj[0], 1., -1.)
+    WmWmInterference_detajj[0].Add(WmWmQCD_detajj[0], -1.)
+    WmWmInterference_detajj[1].Add(WmWmEWKQCD_detajj[1], WmWmEWK_detajj[1], 1., -1.)
+    WmWmInterference_detajj[1].Add(WmWmQCD_detajj[1], -1.)
+    WmWmInterference_detajj[2].Add(WmWmEWKQCD_detajj[2], WmWmEWK_detajj[2], 1., -1.)
+    WmWmInterference_detajj[2].Add(WmWmQCD_detajj[2], -1.)
+
+    WpWpInterference_detajj[0].Add(WpWpEWKQCD_detajj[0], WpWpEWK_detajj[0], 1., -1.)
+    WpWpInterference_detajj[0].Add(WpWpQCD_detajj[0], -1.)
+    WpWpInterference_detajj[1].Add(WpWpEWKQCD_detajj[1], WpWpEWK_detajj[1], 1., -1.)
+    WpWpInterference_detajj[1].Add(WpWpQCD_detajj[1], -1.)
+    WpWpInterference_detajj[2].Add(WpWpEWKQCD_detajj[2], WpWpEWK_detajj[2], 1., -1.)
+    WpWpInterference_detajj[2].Add(WpWpQCD_detajj[2], -1.)
+
+
     # Now saves this bunch of stuff
+    print 'Writing output'
     outputFile = ROOT.TFile.Open('output.root', 'recreate')
+
     WmWmEWKQCD_mjj[0].Write()
     WmWmEWKQCD_mjj[1].Write()
     WmWmEWKQCD_mjj[2].Write()
     WmWmEWKQCD_detajj[0].Write()
     WmWmEWKQCD_detajj[1].Write()
     WmWmEWKQCD_detajj[2].Write()
+
+    WpWpEWKQCD_mjj[0].Write()
+    WpWpEWKQCD_mjj[1].Write()
+    WpWpEWKQCD_mjj[2].Write()
+    WpWpEWKQCD_detajj[0].Write()
+    WpWpEWKQCD_detajj[1].Write()
+    WpWpEWKQCD_detajj[2].Write()
+
+    WmWmEWK_mjj[0].Write()
+    WmWmEWK_mjj[1].Write()
+    WmWmEWK_mjj[2].Write()
+    WmWmEWK_detajj[0].Write()
+    WmWmEWK_detajj[1].Write()
+    WmWmEWK_detajj[2].Write()
+
+    WpWpEWK_mjj[0].Write()
+    WpWpEWK_mjj[1].Write()
+    WpWpEWK_mjj[2].Write()
+    WpWpEWK_detajj[0].Write()
+    WpWpEWK_detajj[1].Write()
+    WpWpEWK_detajj[2].Write()
+
+    WmWmQCD_mjj[0].Write()
+    WmWmQCD_mjj[1].Write()
+    WmWmQCD_mjj[2].Write()
+    WmWmQCD_detajj[0].Write()
+    WmWmQCD_detajj[1].Write()
+    WmWmQCD_detajj[2].Write()
+
+    WpWpQCD_mjj[0].Write()
+    WpWpQCD_mjj[1].Write()
+    WpWpQCD_mjj[2].Write()
+    WpWpQCD_detajj[0].Write()
+    WpWpQCD_detajj[1].Write()
+    WpWpQCD_detajj[2].Write()
+
+    WmWmInterference_mjj[0].Write()
+    WmWmInterference_mjj[1].Write()
+    WmWmInterference_mjj[2].Write()
+    WmWmInterference_detajj[0].Write()
+    WmWmInterference_detajj[1].Write()
+    WmWmInterference_detajj[2].Write()
+
+    WpWpInterference_mjj[0].Write()
+    WpWpInterference_mjj[1].Write()
+    WpWpInterference_mjj[2].Write()
+    WpWpInterference_detajj[0].Write()
+    WpWpInterference_detajj[1].Write()
+    WpWpInterference_detajj[2].Write()
+
     outputFile.Close()
     
